@@ -4,6 +4,31 @@ const app = express();
 app.set('view engine', 'ejs');
 app.use("/public", express.static(__dirname + "/public"));
 
+let station = [
+  { id:1, code:"JE01", name:"東京駅"},
+  { id:2, code:"JE07", name:"舞浜駅"},
+  { id:3, code:"JE12", name:"新習志野駅"},
+  { id:4, code:"JE13", name:"幕張豊砂駅"},
+  { id:5, code:"JE14", name:"海浜幕張駅"},
+  { id:6, code:"JE05", name:"新浦安駅"},
+];
+
+app.get("/keiyo", (req, res) => {
+  // 本来ならここにDBとのやり取りが入る
+  res.render('db2', { data: station });
+});
+
+app.get("/keiyo_add", (req, res) => {
+  let id = req.query.id;
+  let code = req.query.code;
+  let name = req.query.name;
+  let newdata = { id: id, code: code, name: name };
+  station.push( newdata );
+  res.redirect('/pubic/keiyo_add.html');
+});
+
+
+
 app.get("/hello1", (req, res) => {
   const message1 = "Hello world";
   const message2 = "Bon jour";
@@ -61,6 +86,44 @@ app.get("/janken", (req, res) => {
     total: total
   }
   res.render( 'janken', display );
+});
+
+// --- app.js に以下を追加 ---
+
+// じゃんけん（ラジオボタン入力）の処理ルート
+app.get("/janken_radio", (req, res) => {
+  // プレイヤーの入力を取得 (1:グー, 2:チョキ, 3:パー)
+  const playerInput = parseInt(req.query.hand, 10); 
+  
+  // コンピュータの手を決定 (1:グー, 2:チョキ, 3:パー)
+  const computerInput = Math.floor(Math.random() * 3) + 1;
+  
+  // 手の文字列表現へのマッピング
+  const handMap = { 1: 'グー (✊)', 2: 'チョキ (✌️)', 3: 'パー (🖐️)' };
+  const playerHand = handMap[playerInput] || '不明';
+  const computerHand = handMap[computerInput] || '不明';
+  
+  let result = '';
+
+  // 勝敗判定ロジック
+  if (playerInput === computerInput) {
+      result = '引き分け';
+  } else if (
+      (playerInput === 1 && computerInput === 2) || // グー (1) はチョキ (2) に勝つ
+      (playerInput === 2 && computerInput === 3) || // チョキ (2) はパー (3) に勝つ
+      (playerInput === 3 && computerInput === 1)    // パー (3) はグー (1) に勝つ
+  ) {
+      result = 'あなたの勝ち！🎉';
+  } else {
+      result = 'コンピュータの勝ち...😢';
+  }
+
+  // 新しいテンプレートに結果を渡してレンダリング
+  res.render('janken_radio_result', {
+      playerHand: playerHand,
+      computerHand: computerHand,
+      result: result
+  });
 });
 
 app.listen(8080, () => console.log("Example app listening on port 8080!"));
