@@ -26,7 +26,8 @@ app.get("/keiyo_add", (req, res) => {
   station.push( newdata );
   res.redirect('/pubic/keiyo_add.html');
 });
-
+/*res.rernder('db1', { data: station });
+});*/
 
 
 app.get("/hello1", (req, res) => {
