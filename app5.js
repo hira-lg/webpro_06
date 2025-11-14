@@ -28,7 +28,7 @@ app.get("/vegetable_add", (req, res) => {
   let name = req.query.name;
   let newdata = { id: id, code: code, name: name };
   station.push( newdata );
-  res.rernder('ya_db1', { data: vegetable });
+  res.render('ya_db1', { data: vegetable });
 });
 
 let station2 = [
