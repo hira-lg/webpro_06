@@ -13,6 +13,29 @@ let station = [
   { id:6, code:"JE05", name:"新浦安駅"},
 ];
 
+let vegetable = [
+  { id:1, code:"01", name:"人参"},
+  { id:2, code:"02", name:"大根"},
+  { id:3, code:"03", name:"茄子"},
+  { id:4, code:"04", name:"白菜"},
+  { id:5, code:"05", name:"トマト"},
+  { id:6, code:"06", name:"葱"},
+];
+
+app.get("/keiyo_add", (req, res) => {
+  let id = req.query.id;
+  let code = req.query.code;
+  let name = req.query.name;
+  let newdata = { id: id, code: code, name: name };
+  station.push( newdata );
+  res.rernder('db1', { data: station });
+});
+
+app.get("/yasai", (req, res) => {
+  // 本来ならここにDBとのやり取りが入る
+  res.render('db2', { data: station });
+});
+
 let station2 = [
   { id:1, code:"JE01", name:"東京駅", change:"総武本線，中央線，etc", passengers:403831, distance:0 },
   { id:2, code:"JE02", name:"八丁堀駅", change:"日比谷線", passengers:31071, distance:1.2 },
